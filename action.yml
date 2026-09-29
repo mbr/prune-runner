@@ -1,0 +1,29 @@
+name: Prune runner
+description: Reclaim disk space on GitHub-hosted Ubuntu runners with background cleanup.
+branding:
+  icon: trash-2
+  color: gray-dark
+inputs:
+  remove:
+    description: Whitespace-separated cleanup groups, or all.
+    default: all
+  keep:
+    description: Whitespace-separated groups to preserve. Overrides remove.
+    default: ''
+outputs:
+  units:
+    description: Space-separated systemd service names for inspecting completion and logs.
+    value: ${{ steps.prune.outputs.units }}
+  groups:
+    description: Space-separated groups selected for cleanup.
+    value: ${{ steps.prune.outputs.groups }}
+runs:
+  using: composite
+  steps:
+    - id: prune
+      shell: sh
+      env:
+        PRUNE_RUNNER_REMOVE: ${{ inputs.remove }}
+        PRUNE_RUNNER_KEEP: ${{ inputs.keep }}
+        PRUNE_RUNNER_ACTION_PATH: ${{ github.action_path }}
+      run: '"$PRUNE_RUNNER_ACTION_PATH/prune.py"'
