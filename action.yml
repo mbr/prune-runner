@@ -5,10 +5,7 @@ branding:
     color: gray-dark
 inputs:
     remove:
-        description: Whitespace-separated cleanup groups, or `all`.
-        default: all
-    keep:
-        description: Whitespace-separated groups to preserve. Overrides remove.
+        description: Whitespace-separated cleanup groups. Empty removes all supported groups.
         default: ""
 runs:
     using: composite
@@ -16,6 +13,5 @@ runs:
         - shell: sh
           env:
               PRUNE_RUNNER_REMOVE: ${{ inputs.remove }}
-              PRUNE_RUNNER_KEEP: ${{ inputs.keep }}
               PRUNE_RUNNER_ACTION_PATH: ${{ github.action_path }}
           run: '"$PRUNE_RUNNER_ACTION_PATH/prune.sh"'

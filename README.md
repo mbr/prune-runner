@@ -40,18 +40,7 @@ Measured on Ubuntu image `20260920.314.1`, using decimal GB.
 
 ## Configuration
 
-`remove` defaults to `all`, `keep` defaults to an empty list and beats `remove`. Both accept whitespace-separated group names, including multiline YAML.
-
-To keep selected groups:
-
-```yaml
-- uses: mbr/prune-runner@v1
-  with:
-    keep: |
-      docker
-      java
-      toolcache
-```
+An omitted or empty `remove` selects every supported group. Otherwise, specify the groups to remove, separated by whitespace, including multiline YAML. Unknown names fail when encountered; jobs already queued continue running.
 
 To remove only specific groups:
 
@@ -63,6 +52,6 @@ To remove only specific groups:
       dotnet
 ```
 
-Deletion is irreversible. Do not install or use software in selected paths while cleanup is running. Keep `docker` if later steps need Docker or Docker-based actions. Normal Nix downloads under `/nix` do not target the directories being deleted, though concurrent cleanup can compete for disk I/O.
+Deletion is irreversible. Do not install or use software in selected paths while cleanup is running. Use an explicit list without `docker` if later steps need Docker or Docker-based actions. Normal Nix downloads under `/nix` do not target the directories being deleted, though concurrent cleanup can compete for disk I/O.
 
 While the repository is private, reuse from other private repositories requires GitHub's action-sharing access setting. Public workflows cannot consume a private action.
