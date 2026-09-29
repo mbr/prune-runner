@@ -2,7 +2,7 @@
 # Queues background cleanup on disposable GitHub-hosted Ubuntu runners.
 set -efu
 
-supported='android dotnet haskell swift java powershell browsers toolcache docker apt-cache'
+supported='android dotnet haskell swift java powershell browsers toolcache docker'
 
 # Validates group names and normalizes whitespace for membership checks.
 normalize() {
@@ -59,7 +59,6 @@ for group in $selected; do
         toolcache) set -- /usr/bin/rm -rf -- /opt/hostedtoolcache ;;
         docker) set -- /bin/sh -eu -c '/usr/bin/systemctl stop docker.socket docker.service containerd.service
 exec /usr/bin/rm -rf -- /var/lib/docker /var/lib/containerd' ;;
-        apt-cache) set -- /usr/bin/apt-get clean ;;
     esac
     unit="$prefix-$group.service"
     sudo -n systemd-run --system --quiet --no-block --unit="$unit" \
