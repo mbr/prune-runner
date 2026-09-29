@@ -1,21 +1,21 @@
 name: Prune runner
 description: Reclaim runner disk space with background cleanup.
 branding:
-  icon: trash-2
-  color: gray-dark
+    icon: trash-2
+    color: gray-dark
 inputs:
-  remove:
-    description: Whitespace-separated cleanup groups, or all.
-    default: all
-  keep:
-    description: Whitespace-separated groups to preserve. Overrides remove.
-    default: ''
+    remove:
+        description: Whitespace-separated cleanup groups, or `all`.
+        default: all
+    keep:
+        description: Whitespace-separated groups to preserve. Overrides remove.
+        default: ""
 runs:
-  using: composite
-  steps:
-    - shell: sh
-      env:
-        PRUNE_RUNNER_REMOVE: ${{ inputs.remove }}
-        PRUNE_RUNNER_KEEP: ${{ inputs.keep }}
-        PRUNE_RUNNER_ACTION_PATH: ${{ github.action_path }}
-      run: '"$PRUNE_RUNNER_ACTION_PATH/prune.sh"'
+    using: composite
+    steps:
+        - shell: sh
+          env:
+              PRUNE_RUNNER_REMOVE: ${{ inputs.remove }}
+              PRUNE_RUNNER_KEEP: ${{ inputs.keep }}
+              PRUNE_RUNNER_ACTION_PATH: ${{ github.action_path }}
+          run: '"$PRUNE_RUNNER_ACTION_PATH/prune.sh"'
