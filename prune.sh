@@ -6,7 +6,7 @@ supported='android dotnet haskell swift java powershell browsers toolcache docke
 
 remove=${PRUNE_RUNNER_REMOVE:-$supported}
 
-IFS= read -r nonce </proc/sys/kernel/random/uuid
+read -r nonce </proc/sys/kernel/random/uuid
 prefix="prune-runner-$nonce"
 
 for group in $remove; do
