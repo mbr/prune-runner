@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: mbr/prune-runner@v1
-        id: cleanup
       - uses: actions/checkout@v4
       # ...
 ```
@@ -63,30 +62,6 @@ To remove only specific groups:
       android
       dotnet
 ```
-
-
----
-
-Two outputs describe the submission:
-
-- `groups`: selected group names, separated by spaces.
-- `units`: systemd service names, separated by spaces. Empty when nothing is selected.
-
-Inspect them in a later step:
-
-```yaml
-- name: Inspect cleanup
-  if: always()
-  env:
-    PRUNE_UNITS: ${{ steps.cleanup.outputs.units }}
-  run: |
-    for unit in $PRUNE_UNITS; do
-      systemctl show "$unit" --property=Id,SubState,Result,ExecMainStatus
-      sudo journalctl --no-pager --unit="$unit"
-    done
-```
-
-A successfully finished service has `SubState=exited`, `Result=success`, and `ExecMainStatus=0`. For a completion gate, poll the units until they finish and reject failed results. Inspection alone does not wait or fail on a worker error.
 
 Deletion is irreversible. Do not install or use software in selected paths while cleanup is running. Keep `docker` if later steps need Docker or Docker-based actions. Normal Nix downloads under `/nix` do not target the directories being deleted, though concurrent cleanup can compete for disk I/O.
 

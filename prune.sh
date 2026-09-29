@@ -25,14 +25,11 @@ keep=$(normalize "${PRUNE_RUNNER_KEEP-}")
 IFS= read -r nonce </proc/sys/kernel/random/uuid
 prefix="prune-runner-$nonce"
 selected=''
-units=''
 for group in $supported; do
     case "$remove" in *" all "* | *" $group "*) ;; *) continue ;; esac
     case "$keep" in *" all "* | *" $group "*) continue ;; esac
     selected="${selected:+$selected }$group"
-    units="${units:+$units }$prefix-$group.service"
 done
-printf 'groups=%s\nunits=%s\n' "$selected" "$units" >>"$GITHUB_OUTPUT"
 [ -n "$selected" ] || exit 0
 
 sudo -n true

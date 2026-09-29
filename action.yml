@@ -10,18 +10,10 @@ inputs:
   keep:
     description: Whitespace-separated groups to preserve. Overrides remove.
     default: ''
-outputs:
-  units:
-    description: Space-separated systemd service names for inspecting completion and logs.
-    value: ${{ steps.prune.outputs.units }}
-  groups:
-    description: Space-separated groups selected for cleanup.
-    value: ${{ steps.prune.outputs.groups }}
 runs:
   using: composite
   steps:
-    - id: prune
-      shell: sh
+    - shell: sh
       env:
         PRUNE_RUNNER_REMOVE: ${{ inputs.remove }}
         PRUNE_RUNNER_KEEP: ${{ inputs.keep }}
