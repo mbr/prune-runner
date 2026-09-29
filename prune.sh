@@ -1,26 +1,25 @@
 #!/bin/sh
 # Queues background cleanup using systemd.
+# Input splitting is intentional; set -f disables globbing.
+# shellcheck disable=SC2086
 set -efu
 
 supported='android dotnet haskell swift java powershell browsers toolcache docker'
 
-# Validates group names and normalizes whitespace for membership checks.
-normalize() {
-    names=' '
-    for name in $1; do
-        case " $supported all " in
-            *" $name "*) names="$names$name " ;;
-            *)
-                printf 'Unknown cleanup group: %s\n' "$name" >&2
-                exit 1
-                ;;
-        esac
-    done
-    printf '%s' "$names"
-}
+set -- ${PRUNE_RUNNER_REMOVE-all}
+remove=" $* "
+set -- ${PRUNE_RUNNER_KEEP-}
+keep=" $* "
 
-remove=$(normalize "${PRUNE_RUNNER_REMOVE-all}")
-keep=$(normalize "${PRUNE_RUNNER_KEEP-}")
+for group in $remove $keep; do
+    case " $supported all " in
+        *" $group "*) ;;
+        *)
+            printf 'Unknown cleanup group: %s\n' "$group" >&2
+            exit 1
+            ;;
+    esac
+done
 
 IFS= read -r nonce </proc/sys/kernel/random/uuid
 prefix="prune-runner-$nonce"
