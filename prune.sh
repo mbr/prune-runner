@@ -26,8 +26,6 @@ exec /usr/bin/rm -rf -- /var/lib/docker /var/lib/containerd' ;;
     unit="prune-runner-$group.service"
     sudo -n systemd-run --system --quiet --no-block --unit="$unit" \
         --property=Type=oneshot --property=RemainAfterExit=yes \
-        --property=TimeoutStartSec=10min --property=TimeoutStopSec=30s \
         --property=StandardOutput=journal --property=StandardError=journal \
-        --setenv=PATH=/usr/sbin:/usr/bin:/sbin:/bin -- "$@"
-    printf 'Queued %s: %s\n' "$group" "$unit"
+        -- "$@"
 done
