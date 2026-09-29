@@ -1,8 +1,8 @@
 # prune-runner
 
-The standard `ubuntu-latest` (`ubuntu-24.04` at the time of this writing in 2026) VM image on Github actions is full of ~~trash~~ unused things, which leaves only 14.3 GB out of the 76.9 GB disk image for the actual application code.
+The standard `ubuntu-latest` (`ubuntu-24.04` at the time of this writing in 2026) VM image on Github actions is full of ~~trash~~ unused things, which leaves only 14.3 GB out of the 76.9 GB disk image for the actual application code. This action cleans up **37 GB** of space total.
 
-This Github action removes various components from the image in a systemd background job, i.e. as long as your tests are not filling up space faster than we can delete them, there should not be an issue. Deleting everything takes about 125 seconds total in our cold-run measurement.
+This Github action removes various components from the image in a systemd background job, i.e. as long as your tests are not filling up space faster than we can delete them, there should not be an issue. Deleting everything took about 125 seconds total in a cold-run measurement.
 
 ## Usage
 
@@ -18,6 +18,8 @@ jobs:
       - uses: actions/checkout@v4
       # ...
 ```
+
+If the job finishes before deletion is through, it does not hold up the completion of CI.
 
 
 ## Components deleted
@@ -35,7 +37,7 @@ jobs:
 | `docker` | Docker/containerd images, containers, volumes, and cache | 2.0 |
 | `apt-cache` | Downloaded apt packages | Negligible |
 
-Measured on Ubuntu image `20260920.314.1`, using decimal GB. The browser estimate comes from the parent vendor directories. Our [full cleanup run](https://github.com/mbr/prune-runner/actions/runs/36644101570) reclaimed about **37 GB**; sizes and timings vary with the runner image.
+Measured on Ubuntu image `20260920.314.1`, using decimal GB.
 
 
 ## Configuration
