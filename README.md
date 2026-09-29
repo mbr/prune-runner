@@ -88,10 +88,6 @@ Inspect them in a later step:
 
 A successfully finished service has `SubState=exited`, `Result=success`, and `ExecMainStatus=0`. For a completion gate, poll the units until they finish and reject failed results. Inspection alone does not wait or fail on a worker error.
 
-## Runner requirements
-
-Only disposable GitHub-hosted Ubuntu VMs with systemd are accepted. Self-hosted runners, container jobs, macOS, and Windows are rejected.
-
 Deletion is irreversible. Do not install or use software in selected paths while cleanup is running. Keep `docker` if later steps need Docker or Docker-based actions. Normal Nix downloads under `/nix` do not target the directories being deleted, though concurrent cleanup can compete for disk I/O.
 
 While the repository is private, reuse from other private repositories requires GitHub's action-sharing access setting. Public workflows cannot consume a private action.

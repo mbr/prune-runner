@@ -1,5 +1,5 @@
 name: Prune runner
-description: Reclaim disk space on GitHub-hosted Ubuntu runners with background cleanup.
+description: Reclaim runner disk space with background cleanup.
 branding:
   icon: trash-2
   color: gray-dark

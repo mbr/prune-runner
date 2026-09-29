@@ -1,5 +1,5 @@
 #!/bin/sh
-# Queues background cleanup on disposable GitHub-hosted Ubuntu runners.
+# Queues background cleanup using systemd.
 set -efu
 
 supported='android dotnet haskell swift java powershell browsers toolcache docker'
@@ -21,17 +21,6 @@ normalize() {
 
 remove=$(normalize "${PRUNE_RUNNER_REMOVE-all}")
 keep=$(normalize "${PRUNE_RUNNER_KEEP-}")
-
-if [ "${GITHUB_ACTIONS-}" != true ] || [ "${RUNNER_ENVIRONMENT-}" != github-hosted ] || [ "${RUNNER_OS-}" != Linux ]; then
-    printf 'Requires a disposable GitHub-hosted Linux runner.\n' >&2
-    exit 1
-fi
-. /etc/os-release
-IFS= read -r init </proc/1/comm
-if [ "$ID" != ubuntu ] || [ "$init" != systemd ]; then
-    printf 'Requires an Ubuntu VM with systemd; container jobs are unsupported.\n' >&2
-    exit 1
-fi
 
 IFS= read -r nonce </proc/sys/kernel/random/uuid
 prefix="prune-runner-$nonce"
