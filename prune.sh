@@ -6,9 +6,6 @@ supported='android dotnet haskell swift java powershell browsers toolcache docke
 
 remove=${PRUNE_RUNNER_REMOVE:-$supported}
 
-read -r nonce </proc/sys/kernel/random/uuid
-prefix="prune-runner-$nonce"
-
 for group in $remove; do
     case "$group" in
         android) set -- /usr/bin/rm -rf -- /usr/local/lib/android ;;
@@ -26,7 +23,7 @@ exec /usr/bin/rm -rf -- /var/lib/docker /var/lib/containerd' ;;
             exit 1
             ;;
     esac
-    unit="$prefix-$group.service"
+    unit="prune-runner-$group.service"
     sudo -n systemd-run --system --quiet --no-block --unit="$unit" \
         --property=Type=oneshot --property=RemainAfterExit=yes \
         --property=TimeoutStartSec=10min --property=TimeoutStopSec=30s \
