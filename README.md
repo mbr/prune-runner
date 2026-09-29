@@ -51,7 +51,3 @@ To remove only specific groups:
       android
       dotnet
 ```
-
-Deletion is irreversible. Do not install or use software in selected paths while cleanup is running. Use an explicit list without `docker` if later steps need Docker or Docker-based actions. Normal Nix downloads under `/nix` do not target the directories being deleted, though concurrent cleanup can compete for disk I/O.
-
-While the repository is private, reuse from other private repositories requires GitHub's action-sharing access setting. Public workflows cannot consume a private action.
