@@ -1,8 +1,12 @@
 # prune-runner
 
-Reclaim disk space on GitHub-hosted Ubuntu runners. Cleanup runs in background systemd services, so subsequent workflow steps can proceed immediately.
+The standard `ubuntu-latest` (`ubuntu-24.04` at the time of this writing in 2026) VM image on Github actions is full of ~~trash~~ unused things, which leaves only (TKTK) GB out of the (TKTK) GB disk image for the actual application code.
 
-The default removes **all supported groups**, including Android, .NET, browsers, the hosted tool cache, and Docker storage. Keep anything later steps depend on.
+This Github action removes various components from the image in a systemd background job, i.e. as long as your tests are not filling up space faster than we can delete them, there should not be an issue. Deleting everything takes about TKTK seconds total
+
+## Usage
+
+Simply run the prune action first, it should take only a few hundred milliseconds to start the background deletion jobs.
 
 ```yaml
 jobs:
@@ -12,17 +16,20 @@ jobs:
       - uses: mbr/prune-runner@v1
         id: cleanup
       - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v31
-      - run: nix build
+      # ...
 ```
 
-No checkout, Nix installation, JavaScript bundle, or container is needed by the action itself. For immutable references, pin the action to a commit SHA instead of `v1`.
+
+## Components deleted
+
+TKTK table of name, size, ~ space freed
+
 
 ## Configuration
 
-`remove` defaults to `all`. `keep` defaults to an empty list and takes precedence. Both accept whitespace-separated group names, including multiline YAML. Empty `remove` or `keep: all` selects nothing. Unknown names fail before any cleanup is launched.
+`remove` defaults to `all`, `keep` defaults to an empty list and beats `remove`. Both accept whitespace-separated group names, including multiline YAML.
 
-Keep selected groups:
+To keep selected groups:
 
 ```yaml
 - uses: mbr/prune-runner@v1
@@ -33,7 +40,7 @@ Keep selected groups:
       toolcache
 ```
 
-Remove only selected groups:
+To remove only specific groups:
 
 ```yaml
 - uses: mbr/prune-runner@v1
@@ -43,26 +50,8 @@ Remove only selected groups:
       dotnet
 ```
 
-| Group | Removed paths or operation |
-| --- | --- |
-| `android` | `/usr/local/lib/android` |
-| `dotnet` | `/usr/share/dotnet` |
-| `haskell` | `/usr/local/.ghcup`, `/opt/ghc` |
-| `swift` | `/usr/local/swift`, `/usr/share/swift` |
-| `java` | `/usr/lib/jvm` |
-| `powershell` | `/usr/local/share/powershell` |
-| `browsers` | `/opt/google/chrome`, `/opt/microsoft/msedge` |
-| `toolcache` | `/opt/hostedtoolcache` |
-| `docker` | Stops `docker.socket`, `docker.service`, and `containerd.service`, then removes `/var/lib/docker` and `/var/lib/containerd` |
-| `apt-cache` | Runs `apt-get clean`; installed packages stay installed |
 
-These are directory groups, not dependency-aware language profiles. Keeping `java` does not preserve JDKs inside `toolcache`; keeping `android` does not automatically preserve Java. Missing directories are harmless. Package-manager records and symlinks outside the listed paths are not removed.
-
-## Background execution
-
-Each selected group gets one uniquely named transient systemd service. Services run concurrently as root, with a ten-minute execution limit and a thirty-second stop timeout. Kept groups launch nothing. Docker shutdown and deletion run sequentially inside its service; deletion is skipped if shutdown fails.
-
-The action returns once the services have been submitted, **not when deletion has finished**. Successful submission does not guarantee successful cleanup. A later background failure cannot change the completed action step's status. Results and journals remain available for the lifetime of the runner.
+---
 
 Two outputs describe the submission:
 
