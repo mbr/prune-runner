@@ -26,4 +26,4 @@ runs:
         PRUNE_RUNNER_REMOVE: ${{ inputs.remove }}
         PRUNE_RUNNER_KEEP: ${{ inputs.keep }}
         PRUNE_RUNNER_ACTION_PATH: ${{ github.action_path }}
-      run: '"$PRUNE_RUNNER_ACTION_PATH/prune.py"'
+      run: '"$PRUNE_RUNNER_ACTION_PATH/prune.sh"'

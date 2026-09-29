@@ -87,22 +87,8 @@ A successfully finished service has `SubState=exited`, `Result=success`, and `Ex
 
 ## Runner requirements
 
-Only disposable GitHub-hosted Ubuntu VMs with systemd are accepted. Self-hosted runners, container jobs, macOS, and Windows are rejected. Integration tests run on `ubuntu-24.04`.
+Only disposable GitHub-hosted Ubuntu VMs with systemd are accepted. Self-hosted runners, container jobs, macOS, and Windows are rejected.
 
 Deletion is irreversible. Do not install or use software in selected paths while cleanup is running. Keep `docker` if later steps need Docker or Docker-based actions. Normal Nix downloads under `/nix` do not target the directories being deleted, though concurrent cleanup can compete for disk I/O.
 
 While the repository is private, reuse from other private repositories requires GitHub's action-sharing access setting. Public workflows cannot consume a private action.
-
-## Development
-
-The runtime script uses Ubuntu's `/usr/bin/python3`, outside the tool cache it deletes, and only the standard library. Nix is used for development checks, not action execution.
-
-```sh
-nix develop
-./format.sh
-./check.sh
-```
-
-`nix build` runs the same checks. CI also invokes the composite action on disposable runners, verifying default cleanup, exclusions, service results, and preservation of unselected directories. Unit tests mock privileged operations and never delete runner software.
-
-MIT licensed.
