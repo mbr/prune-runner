@@ -20,7 +20,6 @@ jobs:
 
 If the job finishes before deletion is through, it does not hold up the completion of CI.
 
-
 ## Components deleted
 
 | Group | Component | Approx. space freed (GB) |
@@ -36,7 +35,6 @@ If the job finishes before deletion is through, it does not hold up the completi
 | `docker` | Docker/containerd images, containers, volumes, and cache | 2.0 |
 
 Measured on Ubuntu image `20260920.314.1`, using decimal GB.
-
 
 ## Configuration
 
